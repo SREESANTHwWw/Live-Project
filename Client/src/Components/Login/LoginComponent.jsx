@@ -6,11 +6,48 @@ import { FaRegUser } from "react-icons/fa";
 import { RiLock2Fill } from "react-icons/ri";
 import { IoArrowForwardOutline } from "react-icons/io5";
 import { MdPermContactCalendar } from "react-icons/md";
+import axios from "axios";
+import { server } from "../../Server";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginComponent = () => {
   const [name, setName] = useState("");
   const [pass, setPasswod] = useState("");
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate()
+
+
+  const handleSubmit =async (e)=>{
+    e.preventDefault();
+    axios.post(`${server}/login.php`,{
+      username:name,
+      password:pass
+    }).then((res)=>{
+
+      if(res.data.msg ==="success"){
+        
+       toast.success("login successfully")
+       navigate("/")
+       setName("")
+       setPasswod("")
+       
+        
+      }
+      else{
+
+        toast.error("invalid Credentials")
+      }
+
+
+    }).catch((err)=>{
+      
+     
+    })
+  }
+
+
+
 
   return (
     <div className="w-full h-screen  flex justify-center items-center ">
@@ -22,8 +59,8 @@ const LoginComponent = () => {
           </span>
           <span className="font-medium">Login to your Account</span>
         </div>
-        <form>
-          <div className="w-full h-[12rem]  justify-center flex flex-col  items-center">
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="w-full h-[10rem]  justify-center flex flex-col  items-center">
        
              <FaRegUser className="relative text-yellow-500 right-36 top-[34px] text-[20px]"/>
             <input

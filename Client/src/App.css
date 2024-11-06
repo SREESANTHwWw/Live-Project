@@ -1,0 +1,10 @@
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Adjust based on text length */
+}
+
+.scrolling-text {
+    display: flex;
+    animation: scroll 10s linear infinite;
+}
