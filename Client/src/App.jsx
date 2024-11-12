@@ -11,41 +11,55 @@ import ProfileEdit from "./Pages/ProfileEdit";
 import Home from "./Pages/Home";
 import Products from "./Pages/Products";
 import ProductsContextProvider from "./Components/Context/ProductsContext";
-import { ToastContainer } from "react-toastify";
+import categoryContextProvider from "./Components/Context/CategoryContext";
+import SignupvalContextProvider from "./Components/Context/SignupInputValContext";
+import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthContextProvider from "./Components/Context/AuthContext";
 
 const App = () => {
   return (
     <div className="">
-      <ProductsContextProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Navbar />}>
-              <Route index element={<Home />} />
-            </Route>
 
-            <Route path="/products" element={<Products />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/editpage" element={<ProfileEdit />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Routes>
-        </BrowserRouter>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition:Flip
-        />
-      </ProductsContextProvider>
+<AuthContextProvider>
+
+        <SignupvalContextProvider>
+        <ProductsContextProvider>
+  
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Navbar />}>
+                <Route index element={<Home />} />
+              </Route>
+
+              <Route path="/products" element={<Products />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/editpage" element={<ProfileEdit />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+            </Routes>
+          </BrowserRouter>
+          <ToastContainer
+            position="top-right"
+            autoClose={1000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition:Zoom
+          />
+           
+        </ProductsContextProvider>
+        
+        </SignupvalContextProvider>
+     </AuthContextProvider>
+
+    
     </div>
   );
 };
