@@ -16,6 +16,7 @@ export default {
         'slide-left': 'slide-left 8s linear infinite',
       },
     },
+  
 
   
   },

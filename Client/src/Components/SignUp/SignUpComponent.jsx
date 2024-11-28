@@ -17,7 +17,7 @@ const SignUpComponent = () => {
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
   const [selectedCity, setSelectedCity] = useState("");
-  const [type, setType] = useState("0");
+  const [type, setType] = useState();
   const [validmsg, setValidmsg] = useState("");
 
 
@@ -26,35 +26,25 @@ const SignUpComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const phoneNumber = signupvalues[2].value;
-    const whatsappNumber = signupvalues[3].value;
-    const isValidPhoneNumber = validator.isMobilePhone(phoneNumber);
- 
-    if (!isValidPhoneNumber(phoneNumber)) {
-      setValidmsg("Please 10-digit phone number");
-      return;
-    }
 
-    if (!isValidPhoneNumber(whatsappNumber)) {
-      setValidmsg("Please 10-digit WhatsApp number");
-      return;
-    }
+    
+
 
     try {
-      const res = await axios.post(`${server}/registration.php`, {
+      const res = await axios.post(`${server}/registration`, {
         shopname: signupvalues[0].value,
         owner: signupvalues[1].value,
-        phonenumber: phoneNumber,
+        phonenumber: signupvalues[2].value,
         address: signupvalues[4].value,
-        gstno: signupvalues[7].value,
-        username: signupvalues[8].value,
+        gstno: signupvalues[8].value,
+        username: signupvalues[9].value,
         password,
         pincode: signupvalues[6].value,
         city: signupvalues[5].value,
-        whatsappno: whatsappNumber,
-        stateid: selectedCity,
+        whatsappno:signupvalues[3].value,
+        stateid: signupvalues[7].value,
         type,
-      });
+      })
 
       if (res.data.msg === "success") {
         toast.success("Registered successfully",{theme:"colored"});
@@ -64,7 +54,7 @@ const SignUpComponent = () => {
         signupvalues.forEach(({ setValue }) => setValue(""));
         navigate("/login");
       } else {
-        toast.error(res.data.error || "Registration failed, please check your input" ,{theme:"colored"} );
+        toast.error(res.error || "Registration failed, please check your input" ,{theme:"colored"} );
       }
     } catch (error) {
       console.error(error);
