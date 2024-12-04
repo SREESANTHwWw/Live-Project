@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "./Pages/Navbar";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
@@ -21,10 +21,16 @@ import AuthContextProvider, {
 import Admin from "./Components/Admin/Admin";
 import AllUsers from "./Components/Admin/Users/AllUsers";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import CheckoutPage from "./Pages/CheckoutPage";
+
+
 
 const App = () => {
-  const { isAuthenticated, userType } = useContext(AuthContext);
- 
+
+  const { isAuthenticated,adminData  } = useContext(AuthContext);
+
+console.log(adminData);
+
   return (
     <div className="">
       <AuthContextProvider>
@@ -37,27 +43,30 @@ const App = () => {
                     <Route index element={<Home />} />
                   </Route>
 
-                  <Route
+                  {/* <Route
                     path="/admin"
                     element={
                       <ProtectedRoute>
                         <Admin />
+                        
                       </ProtectedRoute>
+                      
                     }
-                  />
+                    
+                  /> */}
 
-                  {/* {
-                    userType==="admin" ?  <Route path="/admin" element={<Admin/>}/> : }/>
-                  } */}
 
-                  <Route path="/login" element={<Login />} />
+
+                  <Route path="/admin" element={adminData ? <Admin/> : <Navigate to="/login"/> } />
+
+                  <Route path="/login" element={  <Login/> } />
 
                   <Route path="/users" element={<AllUsers />} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/editpage" element={<ProfileEdit />} />
                   <Route path="/cart" element={<Cart />} />
-
+                   <Route path="/checkout" element={<CheckoutPage/>}/>
                   <Route path="/signup" element={<SignUp />} />
                 </Routes>
               </BrowserRouter>

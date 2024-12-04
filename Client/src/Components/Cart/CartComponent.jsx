@@ -2,10 +2,11 @@ import React, { useContext } from "react";
 import Navbar from "../../Pages/Navbar";
 import { ProductsContext } from "../Context/ProductsContext";
 import { MdDelete } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const CartComponent = () => {
   const { cart, setCart } = useContext(ProductsContext);
-
+ const navigate = useNavigate()
   const qtyinc = (id) => {
     setCart(cart.map((item) => (item._id === id ? { ...item, qty: item.qty + 1 } : item)));
   };
@@ -20,7 +21,12 @@ const CartComponent = () => {
 
   const removeItem = (id) => {
     setCart(cart.filter((item) => item._id !== id));
+
   };
+  const checkout = ()=>{
+  navigate("/checkout") 
+    
+  }
 
   return (
     <div className="flex flex-col items-center bg-gray-100 min-h-screen mt-[8rem]">
@@ -58,7 +64,7 @@ const CartComponent = () => {
                 >
                   <img
                     className="w-[100px] h-[100px] object-contain rounded-md"
-                    src={item.image}
+                    src={item.product_img}
                     alt={item.productname}
                   />
 
@@ -109,7 +115,7 @@ const CartComponent = () => {
                   Subtotal: ₹
                   {cart.reduce((total, item) => total + item.price * item.qty, 0)}
                 </span>
-                <button className="w-full py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300">
+                <button className="w-full py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300" onClick={checkout}>
                   Proceed to Buy
                 </button>
               </div>

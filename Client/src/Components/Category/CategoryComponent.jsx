@@ -38,10 +38,10 @@ const filterCategory =()=>{
           >
             <img
               className="w-[40px] sm:w-[50px] h-[40px] sm:h-[50px] object-cover"
-              src={e.image}
+              src={e.Category_img}
               alt={e.Category_name}
             />
-            <span className="mt-2 text-sm sm:text-base  text-blue-950">{e.category}</span>
+            <span className="mt-2 text-sm sm:text-base  text-blue-950">{e.Category_name}</span>
           </div>
         ))}
       </div>

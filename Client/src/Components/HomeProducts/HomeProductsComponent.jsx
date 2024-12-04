@@ -9,10 +9,10 @@ import { toast } from "react-toastify";
 
 const HomeProductsComponent = () => {
   const navigate = useNavigate();
-  const { filterData , } = useContext(ProductsContext);
+  const { filterData ,addtoCart } = useContext(ProductsContext);
   const { userData ,setUserData,authData } = useContext(AuthContext);
   const [image ,setimage] = useState("")
-  const [cart, setCart] = useState([]);
+
   
 
   const navtoProducts = () => {
@@ -29,27 +29,7 @@ const HomeProductsComponent = () => {
 
 
 
-  const addtoCart = (product) => {
-    console.log(authData)
   
- 
-    if(!authData){
-      navigate("/login")
-      return;
-    }else{
-      const existingItem = cart.find((item) => item._id === product._id);
-
-      if (existingItem) {
-        setCart(cart);
-      } else {
-        setCart([...cart, { ...product, qty: 1 }]);
-      }
-      toast.success(`${product.productname} added to cart`, { theme: "colored" });
-
-    }
-
-  
-  };
 
   // useEffect(()=>{
   //  axios.get(`${server}/get-image`)
@@ -78,11 +58,11 @@ const HomeProductsComponent = () => {
           {filterData.map((product, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-between bg-slate-200 p-6 rounded-lg shadow-lg border border-blue-950 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="flex flex-col items-center justify-between shadow-lg bg-slate-200 p-6 rounded-lg  hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
               <img
                 className="w-[150px] h-[150px] object-contain mb-4"
-                src={product.image }
+                src={product.product_img}
                 alt={product.name}
               />
 

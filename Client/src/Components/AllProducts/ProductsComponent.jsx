@@ -21,7 +21,7 @@ const ProductsComponent = () => {
             >
               <img
                 className="w-[150px] h-[150px] object-contain mb-4"
-                src={product.image}
+                src={product.product_img}
                 alt={product.productname}
               />
 

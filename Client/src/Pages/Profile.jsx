@@ -25,7 +25,7 @@ const Profile = () => {
   return (
     <div className="w-full min-h-screen bg-gray-100 flex flex-col items-center pt-16">
       <Navbar />
-      <div className="w-full sm:w-3/4 lg:w-[85%] mx-auto mt-8 p-8 h-full bg-white rounded-3xl shadow-lg">
+      <div className="w-full sm:w-3/4 lg:w-[100%] mx-auto mt-8 p-8 h-full bg-white rounded-3xl shadow-lg">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">
           <button
@@ -59,13 +59,15 @@ const Profile = () => {
         {/* User Information Section */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
           {signupvalues.map(({ icon, placeholder, value }, index) => (
+            
             <div
               key={index}
-              className="flex items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="flex items-center p-3 bg-gray-50 rounded-lg shadow-sm  transition-shadow duration-300"
             >
-              <div className="text-blue-600 text-xl mr-3 leading-none">{icon}</div>
+              <div className="text-yellow-600 text-2xl mr-3 leading-none">{icon}</div>
               <div>
-                <span className="block text-xs text-gray-600 leading-none">{placeholder}</span>
+                
+                <span className="block  text-xs text-gray-600 leading-none">{placeholder}</span>
                 <span className="block text-base text-blue-950 font-medium leading-tight">
                   {value || "N/A"}
                 </span>
@@ -75,20 +77,15 @@ const Profile = () => {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-center mt-4">
           <button
-            className="w-[48%] h-[2.5rem] bg-blue-950 text-white rounded-full shadow-md hover:bg-blue-600 transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-[10%] h-[2.5rem] bg-blue-950 text-white rounded-full shadow-md hover:bg-blue-600 transition-all duration-300 flex items-center justify-center gap-2"
             onClick={editpage}
           >
             Edit Profile
             <BiMessageSquareEdit className="text-white text-lg" />
           </button>
-          <button
-            className="w-[48%] h-[2.5rem] bg-red-500 text-white rounded-full shadow-md hover:bg-red-600 transition-all duration-300 text-sm"
-            onClick={logout}
-          >
-            Logout
-          </button>
+        
         </div>
       </div>
     </div>

@@ -1,0 +1,169 @@
+import React, { useState, useEffect } from "react";
+import AddProduct from "./AddProducts/AddProducts";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { ChevronDownIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/20/solid";
+import EditProducts from "./AddProducts/EditProducts";
+import AddCategory from "./Category/AddCategory";
+import AllUsers from "./Users/AllUsers";
+import Category from "./Category/Category";
+import CategoryContextProvider from "../Context/CategoryContext";
+
+const Admin = () => {
+  const [selectedSection, setSelectedSection] = useState("dashboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar is open by default
+
+  // Function to handle menu click
+  const handleMenuClick = (section) => {
+    setSelectedSection(section);
+  };
+
+  // Automatically close sidebar on responsive screens
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsSidebarOpen(false); // Close sidebar when screen width is below 768px
+      } else {
+        setIsSidebarOpen(true); // Open sidebar when screen width is above 768px
+      }
+    };
+
+    // Attach the resize listener
+    window.addEventListener("resize", handleResize);
+
+    // Run on initial load
+    handleResize();
+
+    // Cleanup listener on component unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <div className="w-full flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      {isSidebarOpen && ( // Render sidebar only if it's open
+        <div className="fixed z-40 top-0 left-0 h-screen w-64 bg-blue-900 text-white p-5 transition-transform duration-300 md:relative md:translate-x-0 md:w-64">
+          <div className="flex items-center justify-between mb-10">
+            <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-full mb-3" />
+            <h2 className="text-xl font-bold">Dils Trades</h2>
+          </div>
+          <nav className="flex flex-col gap-4">
+            <button
+              className={`text-white py-2 px-4 rounded-md w-full ${
+                selectedSection === "dashboard" ? "bg-blue-700" : ""
+              }`}
+              onClick={() => handleMenuClick("dashboard")}
+            >
+              Dashboard
+            </button>
+            <Menu as="div" className="relative inline-block w-full">
+              <MenuButton className="w-full flex justify-between items-center py-2 px-4 rounded-md bg-blue-800 text-white hover:bg-blue-700">
+                Products
+                <ChevronDownIcon className="h-5 w-5 text-white" />
+              </MenuButton>
+              <MenuItems className="absolute left-0 mt-2 w-full rounded-md bg-white shadow-lg ring-1 ring-black/10 focus:outline-none">
+                <MenuItem>
+                  <button
+                    className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => handleMenuClick("allProducts")}
+                  >
+                    All Products
+                  </button>
+                </MenuItem>
+                <MenuItem>
+                  <button
+                    className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => handleMenuClick("addProduct")}
+                  >
+                    Add Products
+                  </button>
+                </MenuItem>
+              </MenuItems>
+            </Menu>
+            <button
+              className={`text-white py-2 px-4 rounded-md w-full ${
+                selectedSection === "category" ? "bg-blue-700" : ""
+              }`}
+              onClick={() => handleMenuClick("category")}
+            >
+              Category
+            </button>
+            <button
+              className={`text-white py-2 px-4 rounded-md w-full ${
+                selectedSection === "users" ? "bg-blue-700" : ""
+              }`}
+              onClick={() => handleMenuClick("users")}
+            >
+              Users
+            </button>
+          </nav>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 p-6">
+        {/* Header with Desktop and Mobile Toggle Buttons */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center">
+          <button
+              className="ml-4 hidden md:block text-blue-900 bg-gray-200 hover:bg-gray-300 p-2 rounded-full"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              {isSidebarOpen ? (
+                <XMarkIcon className="h-6 w-6" />
+              ) : (
+                <Bars3Icon className="h-6 w-6" />
+              )}
+            </button>
+            <h1 className="text-2xl font-semibold text-gray-800">Admin Panel</h1>
+            {/* Desktop Toggle Button */}
+        
+          </div>
+
+          {/* Mobile Toggle Button */}
+          <button
+            className="block md:hidden text-blue-900 bg-gray-200 hover:bg-gray-300 p-2 rounded-full"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            {isSidebarOpen ? (
+              <XMarkIcon className="h-6 w-6" />
+            ) : (
+              <Bars3Icon className="h-6 w-6" />
+            )}
+          </button>
+        </div>
+
+        {/* Content Sections */}
+        {selectedSection === "dashboard" && (
+          <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Dashboard</h2>
+            <p>This is the admin dashboard overview.</p>
+          </div>
+        )}
+        {selectedSection === "allProducts" && (
+          <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+            <EditProducts />
+          </div>
+        )}
+        {selectedSection === "addProduct" && (
+          <div className="bg-white p-6 sm:h-[590px]">
+            <AddProduct />
+          </div>
+        )}
+        {selectedSection === "category" && (
+          <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+            <CategoryContextProvider>
+              <Category />
+            </CategoryContextProvider>
+          </div>
+        )}
+        {selectedSection === "users" && (
+          <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+            <AllUsers />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Admin;

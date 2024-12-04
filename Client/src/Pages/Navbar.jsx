@@ -48,16 +48,17 @@ const Navbar = () => {
 
         
           <div className="flex items-center gap-4 w-full justify-between  sm:w-[50%]">
-            <img className="h-10" src="" alt="Logo" /> 
+            <img className="h-10" src="" alt="Logo" />
+             
             <div className="relative w-[400px] right-6 ">
               <input
-                className="w-full h-[36px] rounded-md px-6 sm:px-10 pl-14 outline-none shadow-lg border-2 border-gray-300 focus:ring-2 focus:ring-blue-500"
+                className="w-full h-[36px] rounded-md px-6 sm:px-10 pl-14 outline-none shadow-lg border-2 border-blue-950 focus:ring-2 focus:ring-blue-800"
                 type="search"
                 placeholder="Search"
                 value={searchData}
                 onChange={searchfunction}
               />
-              <IoSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+              <IoSearch className="absolute  rounded-md top-1/2 transform -translate-y-1/2 text-yellow-500 text-xl bg-blue-900 h-[34px] w-[38px]" />
             </div>
           </div>
 
