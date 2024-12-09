@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
     if ( !adminData ) {
       navigate('/login');
    }
-   else if (adminData==="admin") {
+   else if (adminData) {
     navigate('/admin');
   }
 

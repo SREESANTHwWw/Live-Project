@@ -13,35 +13,20 @@ export const SignupInputValContext = createContext();
 
 const SignupvalContextProvider = (props) => {
 
-  const localdata = localStorage.getItem("userdata")
-   const userData =   localdata ? JSON.parse(localdata):[]
-   console.log(userData)
+ 
    
-  const [shopname, setShopname] = useState(userData?.shopname || "");
-  const [owner, setOwnername] = useState(userData?.owner || "");
-  const [phonenumber, setPhoneNumber] = useState(userData?.phonenumber || "");
-  const [whatsappno, setWhatsapp] = useState(userData?.whatsappno || "");
-  const [address, setAddress] = useState(userData?.address || "");
-  const [city, setCity] = useState(userData?.city || "");
-  const [pincode, setPincode] = useState(userData?.pincode || "");
-  const [gstno, setGstNumber] = useState(userData?.gstno || "");
-  const [username, setUsename] = useState(userData?.username || "");
-  const [stateid, setSelectedCity] = useState(userData?.stateid || "");
+  const [shopname, setShopname] = useState( "");
+  const [owner, setOwnername] = useState( "");
+  const [phonenumber, setPhoneNumber] = useState( "");
+  const [whatsappno, setWhatsapp] = useState( "");
+  const [address, setAddress] = useState( "");
+  const [city, setCity] = useState( "");
+  const [pincode, setPincode] = useState( "");
+  const [gstno, setGstNumber] = useState("");
+  const [username, setUsename] = useState( "");
+  const [stateid, setSelectedCity] = useState("");
 
-  useEffect(() => {
-    if (userData) {
-      setShopname(userData.shopname || "");
-      setOwnername(userData.owner || "");
-      setPhoneNumber(userData.phonenumber || "");
-      setWhatsapp(userData.whatsappno || "");
-      setAddress(userData.address || "");
-      setCity(userData.city || "");
-      setPincode(userData.pincode || "");
-      setGstNumber(userData.gstno || "");
-      setUsename(userData.username || "");
-      setSelectedCity(userData.stateid || "");
-    }
-  }, [userData]);
+
 
   const signupvalues = [
     { icon: <AiFillShop />, placeholder: "Shop Name", value: shopname, setValue: setShopname },

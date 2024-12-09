@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 const CarouselPage = () => {
   const slides = [
     {
-      imgSrc: 'https://penguinui.s3.amazonaws.com/component-assets/carousel/default-slide-1.webp',
-      imgAlt: 'Vibrant abstract painting with swirling blue and light pink hues on a canvas.',
+      imgSrc: '../../public/carvo.png',
+      imgAlt: '',
     },
     {
       imgSrc: 'https://penguinui.s3.amazonaws.com/component-assets/carousel/default-slide-2.webp',

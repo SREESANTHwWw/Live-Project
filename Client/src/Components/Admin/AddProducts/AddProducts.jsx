@@ -24,6 +24,7 @@ const AddProduct = () => {
   const {category} = useContext(CategoryContext)
   const [categoryProduct, setCategoryProduct] = useState(null);
   const [product, setProduct] = useState([]);
+  const[ mRP ,setMRP] = useState("")
   const categoryValue = categoryProduct ? categoryProduct : null;
 
   const addProduct = (e) => {
@@ -43,6 +44,7 @@ const AddProduct = () => {
     // NewProduct.append("Product_id", Product_id);
     NewProduct.append("fast_moving", fast_moving);
     NewProduct.append("isactive", isActive);
+    NewProduct.append("mRP", mRP);
     // NewProduct.append("reorder_id", reorder_id);
    
     if (categoryValue) {
@@ -68,6 +70,7 @@ const AddProduct = () => {
           setUploadedFileUrl(res.data.file.fileUrl);
           setFileId(res.data.file._id);
           setFileMetadata(res.data.file);
+          setMRP("")
         
         } else {
           toast.error("invalid credentials", { theme: "colored" });
@@ -95,7 +98,7 @@ const AddProduct = () => {
         className="space-y-6 w-full sm:w-[80%] md:w-[60%] lg:w-[100%] px-5   shadow-lg rounded-lg"
         onSubmit={addProduct}
       >
-        <div className="grid sm:grid-cols-2 grid-cols-1  gap-6  ">
+        <div className="grid sm:grid-cols-3 grid-cols-1  gap-6  ">
           <input
             className="w-full h-12 px-4 py-2 rounded-md shadow-md border border-gray-300 focus:border-blue-500 outline-none placeholder:text-gray-400"
             placeholder="Product Name"
@@ -150,6 +153,13 @@ const AddProduct = () => {
             name="premium_price"
               type="number"
             onChange={(e) => setPremiumprice(e.target.value)}
+          />
+           <input
+            className="w-full h-12 px-4 py-2  rounded-md shadow-md border border-gray-300 focus:border-blue-500 outline-none placeholder:text-gray-400"
+            placeholder="mRP "
+            name="mRP"
+              type="number"
+            onChange={(e) => setMRP(e.target.value)}
           />
           <input
             className="w-full h-12 px-4 py-2 rounded-md shadow-md border border-gray-300 focus:border-blue-500 outline-none placeholder:text-gray-400"

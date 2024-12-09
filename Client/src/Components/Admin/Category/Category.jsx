@@ -235,6 +235,7 @@ export default function CategoryTable() {
           className="w-12 h-12 rounded-lg object-cover"
         />
       </td>
+      {console.log(currentData)}
       <td className="py-4 px-4">
         <div className="flex gap-2 flex-wrap md:flex-nowrap">
           <button
@@ -251,8 +252,8 @@ export default function CategoryTable() {
             <Pencil size={16} />
             <span className="hidden sm:inline">Edit</span>
           </button>
-          {
-            item.subCategory ?  <button
+          { 
+            item.hasSubcategory===true ?  <button
             className="px-3 py-1 text-white rounde bg-gray-700 transition-colors flex items-center gap-1 "
            
             

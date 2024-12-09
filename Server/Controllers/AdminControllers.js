@@ -26,6 +26,7 @@ router.post(
         fast_moving,
         isActive,
         categoryProduct,
+        mRP
       } = req.body;
 
 
@@ -41,7 +42,7 @@ router.post(
       const filename = req.file.filename;
       const filePath = `uploads/${filename}`
      const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
-      ;
+     
      
       const productdet = {
         productname,
@@ -54,6 +55,7 @@ router.post(
         minimum_order_quantity,
         fast_moving,
         isActive,
+        mRP,
         categoryProduct,
         
       };
@@ -123,7 +125,7 @@ router.post(
   upload.single("Category_img"),
   CatchAsyncError(async (req, res, next) => {
     try {
-      const { Category_id, Category_name, subCategory } = req.body;
+      const { Category_id, Category_name, subCategory,hasSubcategory } = req.body;
       const filename = req.file.filename;
       const filePath = `uploads/${filename}`;
       const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
@@ -131,6 +133,7 @@ router.post(
         Category_id,
         Category_img: fileUrl,
         Category_name,
+        hasSubcategory,
         subCategory,
       };
 

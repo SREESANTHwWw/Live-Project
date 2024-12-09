@@ -10,6 +10,11 @@ const CheckOutComponent = () => {
             
             
          </div>
+         <div>
+             
+
+             
+         </div>
          
 
 

@@ -9,6 +9,10 @@ const categoryModel = new mongoose.Schema({
     Category_img:{
             type:String
     },
+    hasSubcategory:{
+        type:Boolean
+
+    },
     subCategory: 
         {
          type: mongoose.Schema.Types.ObjectId, // Referencing the ObjectId of Category

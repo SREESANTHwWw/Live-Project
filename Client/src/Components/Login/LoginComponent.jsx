@@ -33,42 +33,36 @@ const LoginComponent = () => {
     }
     navigate("/");
   };
-  const handleSubmit =  (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
- 
-      axios.post(`${server}/login-user`, {
+    axios
+      .post(`${server}/login-user`, {
         username: name,
         password: pass,
-      }).then((res)=>{
-        const {type} = res.data.user
-        const {user} = res.data
-        if (res.data.msg === "success" && res.data.user.type ==="user") {
+      })
+      .then((res) => {
+        const { type,id} = res.data.user;
+        const { user, token } = res.data;
         
-          localStorage.setItem("userdata", JSON.stringify(user));
-          
+        console.log(res);
+        if (token && type === "user") {
+        window.localStorage.setItem("userdata", JSON.stringify(user));
+        window.localStorage.setItem("user_id", JSON.stringify(id));
+
           toast.success("Login successfully", { theme: "colored" });
           navigate("/");
           setAuthenticated(true);
-         
         }
-        else if (res.data.msg=== "success" && res.data.user.type ==="admin") {
-          setAuthenticated(true);
-
-          localStorage.setItem("admindata", JSON.stringify(type));
+        if (token && type === "admin") {
+        window.localStorage.setItem("admindata", JSON.stringify(token));
           toast.success("Admin Login successful", { theme: "colored" });
           navigate("/admin");
         }
-  
-
       })
-
-    
-      
-
-    
-   
-    
+      .catch((err) => {
+        toast.error("invalid credentials");
+      });
   };
 
   return (
@@ -88,7 +82,7 @@ const LoginComponent = () => {
                 className="w-full h-12 pl-12 pr-4 rounded-md shadow-lg border focus:border-blue-950 outline-none placeholder:text-gray-500"
                 type="text"
                 placeholder="Username"
-                 autoComplete="username"
+                autoComplete="username"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -101,9 +95,8 @@ const LoginComponent = () => {
                 type={visible ? "text" : "password"}
                 placeholder="Password"
                 minLength={8}
-                 autoComplete="current-password"
+                autoComplete="current-password"
                 value={pass}
-               
                 onChange={(e) => setPasswod(e.target.value)}
               />
               {visible ? (

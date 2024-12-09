@@ -11,7 +11,7 @@ const AuthContextProvider = (props) => {
   
   
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [adminData ,setAdminData] = useState(null)
+  const [adminData ,setAdminData] = useState("")
 
   
     useEffect(()=>{

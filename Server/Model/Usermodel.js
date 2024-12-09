@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
 
@@ -13,7 +14,7 @@ const UserSchema = new mongoose.Schema({
     type:String,
     required:[true ,"Must Provide A Password"],
     minlength:[8 , "less than 8 character"],
-    Selection:false
+    Select:false
 
   },
   shopname:{
@@ -66,11 +67,24 @@ const UserSchema = new mongoose.Schema({
 
   type:{
     type:String,
-    default:"user"
-  }
+    enum: ["user", "admin"],
+    default:"user",
+   
+  },
+  createdAt:{
+    type:Date,
+    default: Date.now()
+},
 
 
 })
+
+
+UserSchema.methods.getJwtToken=function(){
+  return jwt.sign({id:this._id},process.env.JWT_SECRET_KEY,{
+      expiresIn:process.env.JWT_EXPIRES,
+  });
+  }
  
 UserSchema.pre("save", async function(next){
   if(!this.isModified("password")){

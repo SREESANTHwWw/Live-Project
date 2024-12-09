@@ -1,88 +1,78 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { TbSquareRoundedArrowRight } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { ProductsContext } from "../Context/ProductsContext";
-import axios from "axios";
-import { server } from "../../Server";
-import { AuthContext } from "../Context/AuthContext";
-import { toast } from "react-toastify";
 
 const HomeProductsComponent = () => {
   const navigate = useNavigate();
-  const { filterData ,addtoCart } = useContext(ProductsContext);
-  const { userData ,setUserData,authData } = useContext(AuthContext);
-  const [image ,setimage] = useState("")
+  const { filterData, Addtocartfun, formatPrice } = useContext(ProductsContext);
 
-  
-
+  // Navigate to the Products page
   const navtoProducts = () => {
     navigate("/products");
   };
-  useEffect(() => {
-    // Retrieve and parse user data from localStorage
-    const authData = localStorage.getItem("userData");
-    if (authData) {
-      JSON.parse(authData);
-    }
-  }, []);
-
-
-
-
-  
-
-  // useEffect(()=>{
-  //  axios.get(`${server}/get-image`)
-  //  .then((res)=>setimage(res.data))
-
-  // },[])
-
-  
 
   return (
-    <div className="w-full flex justify-center items-center bg-gray-100 py-10 ">
-      <div className="w-full max-w-7xl flex flex-col items-center bg-white p-10 rounded-lg shadow-2xl">
+    <div className="w-full flex justify-center items-center bg-gray-50 py-10">
+      <div className="w-full max-w-7xl flex flex-col items-center px-6 lg:px-0">
+        {/* Header Section */}
         <div className="w-full flex justify-between items-center mb-8">
-          <span className="text-2xl font-bold text-blue-950 hover:text-yellow-500 cursor-pointer transition-all relative before:transition-[width] before:duration-700 before:absolute before:bg-blue-950 before:bottom-0 before:left-[50%] before:h-[2px] before:w-0 hover:before:w-[50%] after:transition-[width] after:duration-700 after:absolute after:bg-blue-950 after:bottom-0 after:right-[50%] after:h-[2px] after:w-0 hover:after:w-[50%]">
+          <h2 className="text-3xl font-bold text-gray-800 tracking-wide">
             New Fast Moving Products
-          </span>
+          </h2>
           <button
             onClick={navtoProducts}
-            className="text-3xl text-yellow-500 hover:text-blue-950 transition duration-300"
+            className="text-4xl text-yellow-500 hover:text-blue-700 transition-colors duration-300"
           >
             <TbSquareRoundedArrowRight />
           </button>
         </div>
 
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full">
           {filterData.map((product, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-between shadow-lg bg-slate-200 p-6 rounded-lg  hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1 duration-300 overflow-hidden"
             >
+              {/* Product Image */}
               <img
-                className="w-[150px] h-[150px] object-contain mb-4"
+                className="w-full h-56 object-cover"
                 src={product.product_img}
-                alt={product.name}
+                alt={product.productname}
               />
 
-              <div className="text-center">
-                <span className="block text-lg font-semibold text-blue-950 mb-1">
-                  {product.productname}
-                </span>
-                <span className="block text-md font-medium text-gray-700 mb-1">
-                  Qty {product.minimum_order_quantity}
-                </span>
-                <span className="block text-xl font-bold text-yellow-500">
-                  ₹{product.price}
-                </span>
-              </div>
+              {/* Product Content */}
+              <div className="p-4 flex flex-col flex-1 justify-between">
+                <div>
+                  {/* Product Name */}
+                  <h3 className="text-lg font-bold text-gray-800 mb-2 truncate">
+                    {product.productname}
+                  </h3>
 
-              <div className="flex flex-col gap-3 mt-4">
-                <button className="w-[200px] h-[40px] bg-blue-950 text-white rounded-md hover:bg-blue-800 transition duration-300" onClick={()=>addtoCart(product)} >
+                  {/* Product Description */}
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {product.description}
+                  </p>
+
+                  {/* Price Section */}
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm font-medium text-gray-500 line-through">
+                      MRP: {formatPrice(product.mRP)}
+                    </p>
+                    <p className="text-xl font-bold text-green-600">
+                      {formatPrice(product.price)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Add to Cart Button */}
+                <button
+                  onClick={() => Addtocartfun(product)}
+                  className="mt-4 w-full py-2 bg-blue-950 text-white font-semibold rounded-md hover:bg-yellow-600 transition duration-300"
+                >
                   Add to Cart
                 </button>
-                
               </div>
             </div>
           ))}

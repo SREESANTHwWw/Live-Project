@@ -7,6 +7,7 @@ const adminrouter = require("./Controllers/AdminControllers");
 const Productrouter = require("./Controllers/ProductsController")
 const categoryrouter = require("./Controllers/CategoryController")
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 require("dotenv").config();
 
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
   res.send("home");
 });
 app.use(express.json());
+app.use(cookieParser())
 
 app.use(cors());
 app.use("/api/v1", userrouter);

@@ -4,6 +4,8 @@ const ErrorHandler = require("../Utils/ErrorHandler")
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const CatchAsyncError = require('../Middlewares/CatchAsyncError')
+const sendToken = require('../Utils/JwtTokwn')
+const CartModel = require('../Model/CartModel')
 
 
 router.post('/registration',CatchAsyncError  (async(req,res)=>{
@@ -40,7 +42,15 @@ router.post('/login-user', CatchAsyncError(async(req, res,next)=>{
         if(!isPasswordValid){
             return next(new ErrorHandler("invaild Credentials"),400)
         }
-        res.status(200).json({msg:"success",user})
+        if (user.type === "admin") {
+            // Send token and user data for admin login
+            sendToken(user, 200, res);
+          } else {
+            // Send token and user data for normal user login
+            sendToken(user, 200, res);
+          }
+      
+     
 
     } catch (error) {
         return next( new ErrorHandler(error.message,400))
@@ -93,6 +103,7 @@ router.patch(`/edit-user/:id`, CatchAsyncError(async(req ,res, next)=>{
     }
 
 }))
+
 
 
 

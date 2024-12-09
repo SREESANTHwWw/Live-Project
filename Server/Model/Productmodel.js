@@ -13,7 +13,7 @@ const ProductSchema = new mongoose.Schema ({
         
     },
     price:{
-        type:String
+        type:Number
 
     },
     unitid:{
@@ -49,6 +49,9 @@ isActive:{
     type:Boolean
 
 },
+mRP:{
+    type:Number
+},
 // reorder_id:{
 //     type:String
 
@@ -65,6 +68,11 @@ categoryProduct:{
     default:null
 },
 
+discount: {
+    type: Number, // Discount percentage (e.g., 10 for 10%)
+    default: 0,   // Default discount is 0%
+  },
+
 // filename: { type: String,  },
 // filepath: { type: String,  },
 // fileUrl: { type: String,  },
@@ -80,5 +88,6 @@ categoryProduct:{
     
 
 })
+;
 
 module.exports = mongoose.model("Product" , ProductSchema)

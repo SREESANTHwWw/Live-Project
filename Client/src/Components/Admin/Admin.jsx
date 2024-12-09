@@ -55,7 +55,7 @@ const Admin = () => {
   const logout = () => {
     
     // Clear everything from localStorage
-    localStorage.clear();  // Removes all items from localStorage
+  window.localStorage.clear();  // Removes all items from localStorage
 
     // Redirect to the login page
     navigate("/login");  // Assuming you have a login route set up

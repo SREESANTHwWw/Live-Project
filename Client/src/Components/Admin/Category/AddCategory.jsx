@@ -29,9 +29,9 @@ const AddCategory = ({ onSuccess, onClose }) => {
     
     
    
-      axios.post(`${server}/add-subcategory`,{
-        subCategory
-      }); // Only append if subcategory is enabled
+      // axios.post(`${server}/add-subcategory`,{
+      //   subCategory
+      // }); // Only append if subcategory is enabled
    
 
     axios

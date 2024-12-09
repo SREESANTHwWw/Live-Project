@@ -22,6 +22,7 @@ import Admin from "./Components/Admin/Admin";
 import AllUsers from "./Components/Admin/Users/AllUsers";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import CheckoutPage from "./Pages/CheckoutPage";
+// import AddtoCartProvider from "./Components/Context/AddtoCartContext";
 
 
 
@@ -33,6 +34,7 @@ console.log(adminData);
 
   return (
     <div className="">
+    
       <AuthContextProvider>
         <CategoryContextProvider>
           <SignupvalContextProvider>
@@ -43,7 +45,7 @@ console.log(adminData);
                     <Route index element={<Home />} />
                   </Route>
 
-                  {/* <Route
+                  <Route
                     path="/admin"
                     element={
                       <ProtectedRoute>
@@ -53,11 +55,11 @@ console.log(adminData);
                       
                     }
                     
-                  /> */}
+                  />
 
 
 
-                  <Route path="/admin" element={adminData ? <Admin/> : <Navigate to="/login"/> } />
+                  {/* <Route path="/admin" element={adminData ? <Admin/> : <Navigate to="/login"/> } /> */}
 
                   <Route path="/login" element={  <Login/> } />
 
@@ -71,7 +73,7 @@ console.log(adminData);
                 </Routes>
               </BrowserRouter>
               <ToastContainer
-                position="top-right"
+                position="top-left"
                 autoClose={1000}
                 hideProgressBar={false}
                 newestOnTop={false}
@@ -87,6 +89,7 @@ console.log(adminData);
           </SignupvalContextProvider>
         </CategoryContextProvider>
       </AuthContextProvider>
+     
     </div>
   );
 };
