@@ -6,20 +6,20 @@ import { ProductsContext } from "../../Context/ProductsContext";
 import { IoSearch } from "react-icons/io5";
 
 const EditProducts = () => {
+  const {     filterData, 
+    Addtocartfun, 
+    formatPrice, 
+    currentPage, 
+    pageNumbers, 
+    totalPages, 
+    setCurrentPage  } = useContext(ProductsContext);
   const [product, setProduct] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [updateProduct, setUpdateProduct] = useState("");
 
 
-  useEffect(() => {
-    fectData();
-  }, []);
+  
 
-  const fectData = () => {
-    axios
-      .get(`${server}/get-products`)
-      .then((res) => setProduct(res.data.product));
-  };
 
   const deleteProduct = (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -75,6 +75,21 @@ const EditProducts = () => {
       console.log(error);
     }
   };
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="flex flex-col items-center w-full p-4">
@@ -101,8 +116,8 @@ const EditProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {product && product.length > 0 ? (
-              product.map((user, index) => (
+            {filterData && filterData.length > 0 ? (
+              filterData.map((user, index) => (
                 <tr key={index} className="even:bg-gray-100">
                   <td className="p-2 border">{user.productname}</td>
                   <td className="p-2 border">
@@ -138,7 +153,7 @@ const EditProducts = () => {
             ) : (
               <tr>
                 <td colSpan="11" className="p-4 text-center">
-                  No users found
+                  No Product found
                 </td>
               </tr>
             )}
@@ -214,13 +229,7 @@ const EditProducts = () => {
                       value={updateProduct.minimum_order_quantity}
                       onChange={handleInputChange}
                     />
-                    <input
-                      className="w-full h-12 px-4 py-2 rounded-md shadow-md border border-gray-300 focus:border-blue-500 outline-none placeholder:text-gray-400"
-                      placeholder="Product ID"
-                      value={updateProduct.Product_id}
-                      name="Product_id"
-                      onChange={handleInputChange}
-                    />
+               
                     <input
                       className="w-full h-12 px-4 py-2 rounded-md shadow-md border border-gray-300 focus:border-blue-500 outline-none placeholder:text-gray-400"
                       placeholder="Fast Moving"
@@ -238,13 +247,7 @@ const EditProducts = () => {
                       />
                       <span className="text-gray-600">Is Active</span>
                     </div>
-                    <input
-                      className="w-full h-12 px-4 py-2 rounded-md shadow-md border border-gray-300 focus:border-blue-500 outline-none placeholder:text-gray-400"
-                      placeholder="Reorder ID"
-                      value={updateProduct.reorder_id}
-                      name="reorder_id"
-                      onChange={handleInputChange}
-                    />
+               
                   </div>
                   <div className="w-full flex justify-center items-center">
                     <button className="w-[300px] h-12 bg-blue-800 text-white rounded-md hover:bg-blue-950 transition duration-300 mt-4">
@@ -257,6 +260,31 @@ const EditProducts = () => {
           </div>
         )}
       </div>
+      <div className="flex mt-6 space-x-2">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="px-4 py-2 border rounded-md hover:bg-gray-200 disabled:opacity-50"
+          >
+            Previous
+          </button>
+          {pageNumbers.map((page) => (
+            <button
+              key={page}
+              onClick={() => handlePageClick(page)}
+              className={`px-4 py-2 border rounded-md hover:bg-gray-200 ${currentPage === page ? 'bg-blue-900 text-white' : 'bg-white'}`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 border rounded-md hover:bg-gray-200 disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
     </div>
   );
 };

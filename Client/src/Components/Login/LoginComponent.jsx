@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa";
 import { RiLock2Fill } from "react-icons/ri";
@@ -10,8 +10,11 @@ import { server } from "../../Server";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../Context/AuthContext";
+import { ProductsContext } from "../Context/ProductsContext";
 
 const LoginComponent = () => {
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
+  const { cartdata } = useContext(ProductsContext);
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const {
@@ -42,23 +45,13 @@ const LoginComponent = () => {
         password: pass,
       })
       .then((res) => {
-        const { type,id} = res.data.user;
-        const { user, token } = res.data;
-        
-        console.log(res);
-        if (token && type === "user") {
-        window.localStorage.setItem("userdata", JSON.stringify(user));
-        window.localStorage.setItem("user_id", JSON.stringify(id));
+        localStorage.setItem("user_id", JSON.stringify(res.data.user.id));
+        setCurrentUser(res.data.user);
+        localStorage.setItem("currentUser", JSON.stringify(res.data.user));
+        toast.success("login successFull");
+        cartdata();
+        window.location.reload()
 
-          toast.success("Login successfully", { theme: "colored" });
-          navigate("/");
-          setAuthenticated(true);
-        }
-        if (token && type === "admin") {
-        window.localStorage.setItem("admindata", JSON.stringify(token));
-          toast.success("Admin Login successful", { theme: "colored" });
-          navigate("/admin");
-        }
       })
       .catch((err) => {
         toast.error("invalid credentials");

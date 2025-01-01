@@ -1,6 +1,11 @@
 const mongoose = require('mongoose')
 
 const categoryModel = new mongoose.Schema({
+
+    parentCategory_id:{
+        type:Number,
+        default:0
+    },
  
     Category_name:{
         type:String
@@ -19,6 +24,7 @@ const categoryModel = new mongoose.Schema({
         ref: "category",
         default:null
               },
+            
     //   ParentCategory_id: { type: String},
     
    

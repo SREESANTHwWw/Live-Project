@@ -5,36 +5,58 @@ import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../Server";
+import { AuthContext } from "../Context/AuthContext";
 
 const CartComponent = () => {
-  const { formatPrice } = useContext(ProductsContext);
+  const { formatPrice, cartdata } = useContext(ProductsContext);
   const localdata = localStorage.getItem("user_id");
   const userId = localdata ? JSON.parse(localdata) : [];
   const [cart, setCart] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
   const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
 
-  const qtyinc = (id) => {
-    setCart(cart.map((item) => (item.Product_id === id ? { ...item, qty: item.minimum_order_quantity + 1 } : item)));
-  };
+  const userType = currentUser?.userType || "user"; // Default to 'user' type
 
-  const qtydec = (id) => {
-    setCart(
-      cart
-        .map((item) => (item._id === id && item.qty > 1 ? { ...item, qty: item.qty - 1 } : item))
-        .filter((item) => item.qty > 0)
-    );
+  const updateQuantity = async (productId, action) => {
+    try {
+      const response = await axios.post(`${server}/addToCart`, {
+        userId,
+        Product_id: productId,
+        action, // 'increase' or 'decrease'
+      });
+      setCart(response.data.cart.items);
+      setSubtotal(response.data.cart.subtotal);
+      cartdata();
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   };
 
   const removeItem = (id) => {
-    axios.delete(`${server}/removeFromcart/${userId}/${id}`).then((res) => setCart(res.data.cart.items));
+   
+    
+    axios
+      .delete(`${server}/removeFromcart/${userId}/${id}`)
+      .then((res) => {
+        setCart(res.data.cart.items);
+        setSubtotal(res.data.cart.subtotal);
+        cartdata();
+      })
+      .catch((err) => console.error("Error removing item:", err));
   };
+
 
   const checkout = () => {
     navigate("/checkout");
   };
 
   useEffect(() => {
-    axios.get(`${server}/getAll-cart/${userId}`).then((res) => setCart(res.data.cart.items));
+    axios.get(`${server}/getAll-cart/${userId}`).then((res) => {
+      setCart(res.data.cart.items);
+      setSubtotal(res.data.cart.subtotal);
+   
+    });
   }, [userId]);
 
   return (
@@ -61,21 +83,33 @@ const CartComponent = () => {
 
                 {/* Product Details */}
                 <div className="flex-1 flex flex-col gap-2 ml-6">
-                  <span className="text-lg font-semibold text-blue-950">{item.productname}</span>
-                  <span className="text-sm text-gray-600">{item.description}</span>
+                  <span className="text-lg font-semibold text-blue-950">
+                    {item.productname}
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    {item.description}
+                  </span>
 
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-4 mt-2">
-                    <button
+                    {item.minimum_order_quantity ==1 ?  <button
+                    className="text-red-500 hover:text-red-700 transition duration-200"
+                    onClick={() => removeItem(item.Product_id)}
+                  >
+                    <MdDelete size={24} />
+                  </button>: <button
                       className="w-[30px] h-[30px] flex items-center justify-center border border-gray-300 text-black font-extrabold rounded-md hover:bg-gray-200"
-                      onClick={() => qtydec(item.Product_id)}
+                      onClick={() => updateQuantity(item.Product_id, "decrease")}
                     >
                       -
-                    </button>
-                    <span className="font-bold text-lg">{item.minimum_order_quantity}</span>
+                    </button> }
+                    
+                    <span className="font-bold text-lg">
+                      {item.minimum_order_quantity}
+                    </span>
                     <button
                       className="w-[30px] h-[30px] flex items-center justify-center border border-gray-300 text-black font-extrabold rounded-md hover:bg-gray-200"
-                      onClick={() => qtyinc(item.Product_id)}
+                      onClick={() => updateQuantity(item.Product_id, "increase")}
                     >
                       +
                     </button>
@@ -84,8 +118,17 @@ const CartComponent = () => {
 
                 {/* Price and MRP */}
                 <div className="absolute flex flex-col items-center justify-center top-2 right-4">
-                  <span className="text-xl font-semibold text-black-600">Price: {formatPrice(item.price)}</span>
-                  <span className="text-sm font-semibold line-through text-gray-500">MRP: {formatPrice(item.mRP)}</span>
+                  <span className="text-xl font-semibold text-black-600">
+                    Price:{" "}
+                    {userType === "medium"
+                      ? formatPrice(item.medium_price)
+                      : userType === "premium"
+                      ? formatPrice(item.premium_price)
+                      : formatPrice(item.price)}
+                  </span>
+                  <span className="text-sm font-semibold line-through text-gray-500">
+                    MRP: {formatPrice(item.mRP)}
+                  </span>
                 </div>
 
                 {/* Remove Item */}
@@ -101,8 +144,12 @@ const CartComponent = () => {
             ))
           ) : (
             <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-lg shadow-md">
-              <p className="text-lg font-medium text-gray-700">🛒 Your cart is empty.</p>
-              <p className="text-sm text-gray-500">Browse products and add items to your cart.</p>
+              <p className="text-lg font-medium text-gray-700">
+                🛒 Your cart is empty.
+              </p>
+              <p className="text-sm text-gray-500">
+                Browse products and add items to your cart.
+              </p>
             </div>
           )}
         </div>
@@ -113,7 +160,7 @@ const CartComponent = () => {
             {cart.length > 0 ? (
               <div className="flex flex-col items-center gap-6">
                 <span className="text-xl font-semibold text-gray-700">
-                  Subtotal: {formatPrice(cart.reduce((total, item) => total + item.price * item.minimum_order_quantity, 0))}
+                  Subtotal: {formatPrice(subtotal)}
                 </span>
                 <button
                   className="w-full py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300"
@@ -135,8 +182,7 @@ const CartComponent = () => {
           {cart.length > 0 ? (
             <div className="flex flex-col items-center gap-6">
               <span className="text-xl font-semibold text-gray-700">
-                Subtotal: ₹
-                {cart.reduce((total, item) => total + item.price * item.qty, 0)}
+                Subtotal: {formatPrice(subtotal)}
               </span>
               <button
                 className="w-full py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300"
@@ -154,4 +200,4 @@ const CartComponent = () => {
   );
 };
 
-export default CartComponent;
+export default CartComponent; 

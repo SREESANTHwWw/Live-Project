@@ -125,12 +125,12 @@ router.post(
   upload.single("Category_img"),
   CatchAsyncError(async (req, res, next) => {
     try {
-      const { Category_id, Category_name, subCategory,hasSubcategory } = req.body;
+      const { parentCategory_id, Category_name, subCategory,hasSubcategory } = req.body;
       const filename = req.file.filename;
       const filePath = `uploads/${filename}`;
       const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
       const categorydet = {
-        Category_id,
+        parentCategory_id,
         Category_img: fileUrl,
         Category_name,
         hasSubcategory,
@@ -146,21 +146,25 @@ router.post(
   })
 );
 
-// router.post('/add-subcategory',CatchAsyncError(async(req,res,next)=>{
 
-//   try {
-//         const {subCategory, category_id} =req.body
-//         const subcategoryDet = {
-//           subCategory,category_id
-//         }
-//       const add_category = await subcategorymodel.create(subcategoryDet)
-//       res.status(201).json({msg:"success" , add_category})
+router.post('/add-subcategory/:id',upload.single("subCategory_img"),CatchAsyncError(async(req,res,next)=>{
 
-//   } catch (error) {
-//     return next( new ErrorHandler(error.message,400))
+  try {
+        const {subCategory, category_id} =req.body
+        const filename = req.file.filename;
+        const filePath = `uploads/${filename}`;
+        const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`
+        const subcategoryDet = {
+          subCategory,category_id,subCategory_img:fileUrl
+        }
+      const add_category = await subcategorymodel.create(subcategoryDet)
+      res.status(201).json({msg:"success" , add_category})
 
-//   }
-// }))
+  } catch (error) {
+    return next( new ErrorHandler(error.message,400))
+
+  }
+}))
 
 router.get(
   "/get-category/:id",

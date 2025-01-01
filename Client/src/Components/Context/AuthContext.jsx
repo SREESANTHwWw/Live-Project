@@ -4,24 +4,25 @@ import { server } from "../../Server";
 import { json, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext({
+  setCurrentUser: () => null,
+  currentUser: null,
+}
+
+);
 
 const AuthContextProvider = (props) => {
   // Use a string for user type like 'admin', 'user'
   
   
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [adminData ,setAdminData] = useState("")
-
   
-    useEffect(()=>{
-      const  admintype = localStorage.getItem("admindata")
-       if(admintype){
-        setAdminData (JSON.parse(admintype))
-       }
-
-    },[]) 
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  })
   
+    
     
  
   // Guest login handler
@@ -50,10 +51,11 @@ const AuthContextProvider = (props) => {
       value={{
         loginAsGuest,
         
-     
+        currentUser, setCurrentUser,
+        
         isAuthenticated,
         setAuthenticated,
-        adminData
+     
     
        
       }}

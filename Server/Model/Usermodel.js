@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema({
   },
   gstno:{
     type:String,
-    required:[true , "Must Provide a GstNumber"],
+   
     
 
   },
@@ -67,7 +67,7 @@ const UserSchema = new mongoose.Schema({
 
   type:{
     type:String,
-    enum: ["user", "admin"],
+    enum: ["user", "admin","medium","permium"],
     default:"user",
    
   },

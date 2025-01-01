@@ -26,10 +26,6 @@ const SignUpComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
-    
-
-
     try {
       const res = await axios.post(`${server}/registration`, {
         shopname: signupvalues[0].value,
@@ -57,8 +53,8 @@ const SignUpComponent = () => {
         toast.error(res.error || "Registration failed, please check your input" ,{theme:"colored"} );
       }
     } catch (error) {
-      console.error(error);
-      toast.error("An error occurred during registration" ,{theme:"colored"});
+      toast.error(error.response.data.msg);
+      
     }
   };
 

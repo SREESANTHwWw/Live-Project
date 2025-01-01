@@ -68,10 +68,6 @@ categoryProduct:{
     default:null
 },
 
-discount: {
-    type: Number, // Discount percentage (e.g., 10 for 10%)
-    default: 0,   // Default discount is 0%
-  },
 
 // filename: { type: String,  },
 // filepath: { type: String,  },

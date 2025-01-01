@@ -10,25 +10,45 @@ const ProductsContextProvider = (props) => {
   const [searchData, setSearchData] = useState("");
   const [filterData, setFilterData] = useState([]);
   const [cart, setCart] = useState([]);
+  const [subtotal, setSubtotal] = useState("");
+  const [cartlength,setCartlength]=useState([])
+  const[viewOne,setViewone]= useState([])
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const [totalPages, setTotalPages] = useState(1);
+  const perpage = 4;
 
-  useEffect(() => {
+
+
+  const FetchProduct = () => {
+    const offset = (currentPage - 1) * perpage;
+
     axios
-      .get(`${server}/get-products`)
-      .then((res) => setProducts(res.data.product))
+      .get(`${server}/get-products?page=${currentPage}`)
+      .then((res) => {
+        console.log(res.data);
+        setProducts(res.data.results)
+        setTotalPages(res.data.totalPages); // Set products data
+       
+      })
       .catch((err) => {
         console.error(err);
-        toast.error("Failed to fetch products");
+        toast.error("Failed to fetch products"); // Show error toast
       });
-  }, []);
+  };
+
+  // Fetch data when page or limit changes
+  useEffect(() => {
+    FetchProduct();
+  }, [currentPage, perpage]);
+
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   useEffect(() => {
     if (!searchData) {
       setFilterData(product);
     } else {
-      const filteredSearchData = product.filter(
-        (res) =>
-          res.productname.toLowerCase().includes(searchData)
-          
+      const filteredSearchData = product.filter((res) =>
+        res.productname.toLowerCase().includes(searchData)
       );
       setFilterData(filteredSearchData);
     }
@@ -38,6 +58,7 @@ const ProductsContextProvider = (props) => {
     setSearchData(e.target.value.toLowerCase());
   };
 
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -46,68 +67,76 @@ const ProductsContextProvider = (props) => {
     }).format(price);
   };
 
-  // const addtoCart = (product) => {
-   
-  
  
-   
-  //   const existingItem = cart.find((item) => item._id === product._id);
 
-  //   if (existingItem) {
-  //     setCart(cart);
-  //   } else {
-  //     setCart([...cart, { ...product, qty: 1 }]);
-  //   }
+  const localdata = localStorage.getItem("user_id");
 
+  const userId = localdata ? JSON.parse(localdata) : [];
 
-  
-  // };
-  
-  const localdata = localStorage.getItem("user_id")
+  const Addtocartfun = (product) => {
+    const Product_id = product._id;
+    const minimum_order_quantity = product.minimum_order_quantity;
 
-    const userId =   localdata ? JSON.parse(localdata):[]
-   
-  
-   const Addtocartfun =(product)=>{
-  
-        const Product_id = product._id
-        const  minimum_order_quantity  = product.minimum_order_quantity
+    const productname = product.productname;
+    const product_img = product.product_img;
+    const premium_price = product.premium_price
+    const medium_price = product.medium_price
+    const price = product.price;
+    const description = product.description;
+    const mRP = product.mRP;
+
+    console.log(Product_id, minimum_order_quantity, userId, price);
+
+    axios
+      .post(`${server}/addToCart`, {
+        userId,
+        Product_id,
+        minimum_order_quantity,
+        productname,
+        product_img,
+        premium_price,
+        medium_price,
+        price,
+        description,
+        mRP,
+      })
+      .then((res) => {
+        setCart(res.data.cart.items);
+        cartdata()
+        console.log(res.data.cart.items);
         
-        const productname  = product.productname
-        const product_img  = product.product_img
-        
-        const price= product.price
-        const  description = product.description
-        const mRP= product.mRP
-        
-        console.log(Product_id,minimum_order_quantity,userId,price)
-  
-       axios.post(`${server}/addToCart`,{
-           userId,
-           Product_id,
-           minimum_order_quantity ,
-           productname,
-           product_img,
-           price,
-           description,
-           mRP
-   
-       }).then((res)=>{
-        setCart(res.data.cart.items)
-         toast.success(`${product.productname} added to cart`, { theme: "colored" });
-          // const cart =res.data.cart.items;
-          // localStorage.setItem("cartdata",JSON.stringify(cart))
 
-          
-          
+        toast.success(`${product.productname} added to cart`, {
+          theme: "colored",
+        });
+        // const cart =res.data.cart.items;
+        // localStorage.setItem("cartdata",JSON.stringify(cart))
+      })
+      .catch((err) => {
+        toast.error(err.response.data.msg, { theme: "colored" });
+      });
+     
+  };
+
+  const cartdata=()=>{
+    if(userId){
+      axios.get(`${server}/getAll-cart/${userId}`).then((res) => {
+        setCartlength(res.data.cart.items)
+
+    })
   
-       }).catch((err)=>{
-          toast.error(err.response.data.msg)
+
+  }}
+  useEffect(() => {
+    cartdata();
+  }, [userId]);
+
+  const viewProduct=(productId)=>{
+    axios.get(`${server}/getOneproduct/${productId}`)
+    .then((res)=>{setViewone(res.data)}).catch((err)=>console.log(err))
+
+  }
   
-       })
-   
-  
-   }
   return (
     <ProductsContext.Provider
       value={{
@@ -116,10 +145,19 @@ const ProductsContextProvider = (props) => {
         filterData,
         searchData,
         // addtoCart,
+        cartdata,
+        cartlength,
         cart,
         setCart,
         Addtocartfun,
-        formatPrice
+        formatPrice,
+        viewProduct,
+        viewOne,
+        setCurrentPage,
+        currentPage,
+        pageNumbers,
+        totalPages
+        
       }}
     >
       {props.children}

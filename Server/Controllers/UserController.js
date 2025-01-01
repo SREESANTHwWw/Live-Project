@@ -6,12 +6,18 @@ const router = express.Router()
 const CatchAsyncError = require('../Middlewares/CatchAsyncError')
 const sendToken = require('../Utils/JwtTokwn')
 const CartModel = require('../Model/CartModel')
+const UserAddressmode = require('../Model/UserAddressmode')
 
 
 router.post('/registration',CatchAsyncError  (async(req,res)=>{
     try {
 
-     
+        const {username}  =req.body
+ 
+         const existUsername = await usermodel.findOne({username})
+         if(existUsername){
+           return res.status(400).json({msg:"UserName Already Exist"})
+         }
         const user = await usermodel.create(req.body)
         
         res.status(201).json({msg :"success"})
@@ -103,6 +109,70 @@ router.patch(`/edit-user/:id`, CatchAsyncError(async(req ,res, next)=>{
     }
 
 }))
+
+router.post('/add-address',CatchAsyncError(async(req,res,next)=>{
+    try {
+        const{userId,fullname,Pincode,city,phonenumber,landmark,state} = req.body
+
+        const newAddress = new UserAddressmode({
+            userId:userId,
+            fullname:fullname,
+            Pincode:Pincode,
+            city:city,
+            phonenumber:phonenumber,
+            landmark:landmark,
+            state:state
+            
+        })
+        newAddress.save()
+        res.status(201).json({newAddress})
+        
+    } catch (error) {
+        return next(new ErrorHandler(error.message,400))
+        
+    }
+}))
+
+router.get('/getAddress/:userId', CatchAsyncError(async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+  
+      const getaddress = await UserAddressmode.find({ userId });
+      if (getaddress.length === 0) {
+        return res.status(401).json({ msg: "No user address found for this ID" });
+      }
+      res.status(200).json(getaddress); // Return the array directly
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }));
+
+  
+  // Delete address route using `findOneAndDelete`
+  router.delete('/delete-address/:userId/:addressId', CatchAsyncError(async (req, res, next) => {
+      try {
+          const { userId, addressId } = req.params;
+  
+          // Find and delete the address directly from the Address collection
+          const deletedAddress = await UserAddressmode.findOneAndDelete({
+              _id: addressId,
+              userId: userId  // Ensure the address belongs to the correct user
+          });
+  
+          if (!deletedAddress) {
+              return res.status(404).json({ msg: `Address not found with ID ${addressId} for User ${userId}` });
+          }
+  
+          // Address successfully deleted
+          res.status(200).json({ msg: "Address deleted successfully" });
+          
+      } catch (error) {
+          return next(new ErrorHandler(error.message, 400));
+      }
+  }));
+  
+  
+  
 
 
 

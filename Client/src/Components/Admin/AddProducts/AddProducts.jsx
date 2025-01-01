@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { CategoryContext } from "../../Context/CategoryContext";
 
-const AddProduct = () => {
+const AddProduct = ({onSuccess}) => {
   const [productname, setProductname] = useState("");
   const [product_img, setProduct_img] = useState(null);
   const [price, setPrice] = useState("");
@@ -94,6 +94,8 @@ const AddProduct = () => {
   
   return (
     <div className="w-full sm:h-[550px] h-[900px] flex flex-col justify-center items-center bg-gray-50 py-28 ">
+      <button onClick={onSuccess}>X</button>
+
       <form
         className="space-y-6 w-full sm:w-[80%] md:w-[60%] lg:w-[100%] px-5   shadow-lg rounded-lg"
         onSubmit={addProduct}

@@ -1,24 +1,22 @@
 import React, { useContext, useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
+import {  Navigate, useNavigate } from "react-router-dom";
 import { AuthContext } from "./Context/AuthContext";
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated,adminData } = useContext(AuthContext);
-  const navigate = useNavigate()
+const ProtectedRoute = ({ children,allowedTypes }) => {
+  
 
-  useEffect(()=>{
-    if ( !adminData ) {
-      navigate('/login');
-   }
-   else if (adminData) {
-    navigate('/admin');
+  const { currentUser} = useContext(AuthContext);
+  
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+  if (allowedTypes && !allowedTypes.includes(currentUser.type)) {
+    return <Navigate to="/login" replace />;
   }
 
-  },[navigate,isAuthenticated ])
-
-  
- 
   return children;
 };
+  
+
 
 export default ProtectedRoute;

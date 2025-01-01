@@ -1,15 +1,63 @@
-import React, { useContext, useEffect } from "react";
-import { TbSquareRoundedArrowRight } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ProductsContext } from "../Context/ProductsContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const HomeProductsComponent = () => {
   const navigate = useNavigate();
-  const { filterData, Addtocartfun, formatPrice } = useContext(ProductsContext);
+  const { 
+    filterData, 
+    Addtocartfun, 
+    formatPrice, 
+    currentPage, 
+    pageNumbers, 
+    totalPages, 
+    setCurrentPage 
+  } = useContext(ProductsContext);
+  const { currentUser } = useContext(AuthContext);
 
   // Navigate to the Products page
-  const navtoProducts = () => {
-    navigate("/products");
+  const navtoProducts = () => navigate("/products");
+
+  // Function to render price based on user type
+  const renderPrice = (product) => {
+    if (!currentUser) return null; // Don't show prices if no user is logged in
+
+    const priceTypes = {
+      user: product.price,
+      medium: product.medium_price,
+      premium: product.premium_price,
+    };
+
+    const userType = currentUser.type;
+    const price = priceTypes[userType];
+
+    return (
+      <div className="flex justify-between items-center">
+        <p className="text-sm font-medium text-gray-500 line-through">
+          MRP: {formatPrice(product.mRP)}
+        </p>
+        <p className="text-xl font-bold text-green-600">
+          {formatPrice(price)}
+        </p>
+      </div>
+    );
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -17,14 +65,14 @@ const HomeProductsComponent = () => {
       <div className="w-full max-w-7xl flex flex-col items-center px-6 lg:px-0">
         {/* Header Section */}
         <div className="w-full flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 tracking-wide">
+          <h2 className="sm:text-3xl text-md font-bold text-gray-800 tracking-wide">
             New Fast Moving Products
           </h2>
           <button
             onClick={navtoProducts}
-            className="text-4xl text-yellow-500 hover:text-blue-700 transition-colors duration-300"
+            className="text-sm w-[80px] font-medium h-[30px] bg-blue-950 rounded-md text-yellow-500 hover:bg-blue-700 transition-colors duration-300"
           >
-            <TbSquareRoundedArrowRight />
+            Show More
           </button>
         </div>
 
@@ -35,16 +83,18 @@ const HomeProductsComponent = () => {
               key={index}
               className="flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1 duration-300 overflow-hidden"
             >
-              {/* Product Image */}
-              <img
-                className="w-full h-56 object-cover"
-                src={product.product_img}
-                alt={product.productname}
-              />
+              {/* Clickable Product Image */}
+              <Link to={`/viewproduct/${product._id}`}>
+                <img
+                  className="w-full h-56 object-cover"
+                  src={product.product_img}
+                  alt={product.productname}
+                />
+              </Link>
 
               {/* Product Content */}
               <div className="p-4 flex flex-col flex-1 justify-between">
-                <div>
+                <Link to={`/viewproduct/${product._id}`}>
                   {/* Product Name */}
                   <h3 className="text-lg font-bold text-gray-800 mb-2 truncate">
                     {product.productname}
@@ -56,15 +106,8 @@ const HomeProductsComponent = () => {
                   </p>
 
                   {/* Price Section */}
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm font-medium text-gray-500 line-through">
-                      MRP: {formatPrice(product.mRP)}
-                    </p>
-                    <p className="text-xl font-bold text-green-600">
-                      {formatPrice(product.price)}
-                    </p>
-                  </div>
-                </div>
+                  {renderPrice(product)}
+                </Link>
 
                 {/* Add to Cart Button */}
                 <button
@@ -76,6 +119,33 @@ const HomeProductsComponent = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex mt-6 space-x-2">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="px-4 py-2 border rounded-md hover:bg-gray-200 disabled:opacity-50"
+          >
+            Previous
+          </button>
+          {pageNumbers.map((page) => (
+            <button
+              key={page}
+              onClick={() => handlePageClick(page)}
+              className={`px-4 py-2 border rounded-md hover:bg-gray-200 ${currentPage === page ? 'bg-blue-900 text-white' : 'bg-white'}`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 border rounded-md hover:bg-gray-200 disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

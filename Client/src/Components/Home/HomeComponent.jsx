@@ -11,7 +11,7 @@ const HomeComponent = () => {
       <CategoryContextProvider>
         <div className="w-full max-w-7xl mx-auto px-4 ">
   
-          <div className="w-full ">
+          <div className="w-full  ">
             <Category />
           </div>
             
